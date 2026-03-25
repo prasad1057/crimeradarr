@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrimeRadar</title>
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0a0f1d;
+            color: white;
+            text-align: center;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            position:fixed;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color:white;
+        }
+
+        .nav-buttons {
+            padding-left:20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-button {
+            background: #222;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 1rem;
+        }
+
+        .nav-button:hover {
+            background: #444;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .hero span {
+            color: #4a8ff0;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin: 10px 0 20px;
+            max-width: 600px;
+        }
+
+        .cta-btn {
+            background: #4a8ff0;
+            color: white;
+            font-size: 1rem;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .cta-btn:hover {
+            background: #3a7adf;
+            transform: scale(1.05);
+        }
+
+        /* Features Section */
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 50px 20px;
+        }
+
+        .card {
+            background: #121826;
+            padding: 20px;
+            border-radius: 10px;
+            width: 250px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .icon {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        /* Footer Section */
+        .footer {
+            background: #121826;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin: 10px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .footer-section p, .footer-section a {
+            font-size: 0.9rem;
+            color: #bbb;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .social-icons a {
+            font-size: 1.4rem;
+            color: white;
+            transition: color 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: #4a8ff0;
+        }
+
+        .footer-bottom {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #bbb;
+        }
+    </style>    
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar">
+        <a href="/" class="logo" >CrimeRadar</a>
+        <div class="nav-buttons">
+            <button class="nav-button" onclick="redirectToIndex()">Crime Prediction</button>
+            <button class="nav-button" onclick="goToNews()">Crime News</button>
+            <a href="{{ url_for('dashboard') }}" style="text-decoration: none; color: inherit;">
+            <button class="nav-button">Predictive Analysis</button></a>
+            <button class="nav-button" onclick="goToHeatmap()">Crime Heatmap</button>
+            <a class="nav-button" href="http://192.168.163.132:5000/">Crime AI</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Crime Prediction using <br> <span>CrimeRadar</span></h1>
+        <p>Preventing crime starts with predicting it. Technology doesn’t just see the past—it safeguards the future.</p>
+        <button class="cta-btn" onclick="redirectToIndex()">Check Crime Rate</button>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="card">
+            <div class="icon">✨</div>
+            <h3>AI-Powered Assistance</h3>
+            <p>Get instant help with crime prediction and security insights.</p>
+        </div>
+
+        <div class="card">
+            <div class="icon">💻</div>
+            <h3>Real-time Crime Detection</h3>
+            <p>Analyze live data to detect potential criminal activities.</p>
+        </div>
+
+        
+        
+            <div class="card">
+                <div class="icon">📈</div>
+                <h3>Predictive Analysis</h3>
+                <p>Analyze historical data to predict future crime rates.</p>
+                
+            </div>
+    
+
+        <div class="card">
+            <div class="icon">🗺️</div>
+            <h3>Crime Heatmap</h3>
+            <p>Visualize crime patterns across cities with interactive heatmaps.</p>
+            
+
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About CrimeRadar</h3>
+                <p>CrimeRadar is an AI-powered platform designed to predict and prevent crimes using advanced analytics.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="#">Home</a>
+                <a href="#">Crime News</a>
+                <a href="#">Predictions</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2025 CrimeRadar | All Rights Reserved
+        </div>
+    </footer>   
+
+    <script>
+        function redirectToIndex() {
+            window.location.href = "{{ url_for('index') }}";
+        }
+
+        function goToNews() {
+            window.location.href = "{{ url_for('news') }}";
+        }
+        function goToHeatmap() {
+            window.location.href = "{{ url_for('heatmap') }}";
+        }
+    </script>
+    
+
+
+</body>
+</html>

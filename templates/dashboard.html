@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crime Data Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: rgb(25, 50, 89);
+        --primary-light: #e2eafc;
+        --secondary: #4361ee;
+        --accent: #ff6b6b;
+        --dark: #2b2d42;
+        --gray: #8d99ae;
+        --light: #f8f9fa;
+        --white: #ffffff;
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --radius: 8px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--light);
+        color: var(--dark);
+        line-height: 1.5;
+        font-size: 16px;
+      }
+
+      .container {
+        width: 95%;
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 0 15px;
+      }
+
+      /* Navbar */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background: rgb(25, 50, 89);
+      }
+
+      .logo {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color:white;
+      }
+
+      .nav-buttons {
+        padding-left: 20px;
+        display: flex;
+        gap: 15px;
+      }
+
+      .nav-button {
+        background: #222;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s;
+        font-size: 1rem;
+      }
+
+      .nav-button:hover {
+        background: #444;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .subtitle {
+        font-size: 1rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      /* City Selection Form */
+      .form-card {
+        background: var(--white);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 20px;
+        margin: 20px 0;
+      }
+
+      form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .form-group {
+        flex: 1;
+        min-width: 250px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: var(--dark);
+      }
+
+      .help-text {
+        font-size: 0.8rem;
+        color: var(--gray);
+        margin-top: 4px;
+      }
+
+      select {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: var(--radius);
+        border: 1px solid #ddd;
+        font-size: 1rem;
+        background-color: var(--white);
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23212529' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        padding-right: 30px;
+      }
+
+      select:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgb(25, 50, 89);
+      }
+
+      button {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: var(--radius);
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.2s;
+      }
+
+      button:hover {
+        background: var(--secondary);
+      }
+
+      /* Page Navigation */
+      .breadcrumbs {
+        display: flex;
+        align-items: center;
+        margin: 15px 0;
+        font-size: 0.85rem;
+      }
+
+      .breadcrumbs a {
+        color: var(--primary);
+        text-decoration: none;
+      }
+
+      .breadcrumbs span {
+        margin: 0 5px;
+        color: var(--gray);
+      }
+
+      /* Content Cards */
+      .card {
+        background: var(--white);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 20px;
+        overflow: hidden;
+      }
+
+      .card-header {
+        padding: 15px 20px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .card-title i {
+        color: var(--primary);
+      }
+
+      .card-body {
+        padding: 20px;
+      }
+
+      /* Stats Section */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .stat-card {
+        background: var(--white);
+        padding: 15px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+        border-top: 3px solid var(--primary);
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 10px 0 5px;
+      }
+
+      .stat-label {
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+
+      /* Charts */
+      .chart-container {
+        padding: 10px;
+      }
+
+      .chart-img {
+        width: 100%;
+        border-radius: 6px;
+      }
+
+      /* Tips Section */
+      .tab-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 15px;
+      }
+
+      .tab-btn {
+        padding: 8px 16px;
+        background-color: rgb(25, 50, 89);
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+      }
+
+      .tab-btn.active {
+        background: var(--primary);
+        color: 4a8ff0;
+      }
+
+      .tip-section {
+        background: var(--primary-light);
+        padding: 15px;
+        border-radius: var(--radius);
+        margin-bottom: 15px;
+      }
+
+      .tip-title {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--primary);
+      }
+
+      .tip-list {
+        list-style-type: none;
+      }
+
+      .tip-list li {
+        padding: 6px 0 6px 24px;
+        position: relative;
+      }
+
+      .tip-list li:before {
+        content: "✓";
+        color: var(--primary);
+        position: absolute;
+        left: 0;
+      }
+
+      /* Help Button */
+      .help-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        z-index: 1000;
+      }
+
+      .help-tooltip {
+        position: absolute;
+        right: 60px;
+        bottom: 5px;
+        background: var(--dark);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        width: 200px;
+        display: none;
+      }
+
+      .help-btn:hover .help-tooltip {
+        display: block;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .form-group {
+          width: 100%;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        h1 {
+          font-size: 1.5rem;
+        }
+
+        .tab-buttons {
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <header class="navbar">
+      <a href="/" class="logo" >CrimeRadar</a>
+      <div class="nav-buttons">
+        <button class="nav-button" onclick="redirectToIndex()">
+          Crime Prediction
+        </button>
+        <button class="nav-button" onclick="goToNews()">Crime News</button>
+        <a
+          href="{{ url_for('dashboard') }}"
+          style="text-decoration: none; color: inherit"
+        >
+          <button class="nav-button">Predictive Analysis</button></a
+        >
+        <button class="nav-button" onclick="goToHeatmap()">
+          Crime Heatmap
+        </button>
+        <a class="nav-button" href="http://192.168.163.132:5000/">Crime AI</a>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="header-content">
+        <h1><i class="fas fa-shield-alt"></i> Crime Data Dashboard</h1>
+        <p class="subtitle">
+          Explore crime statistics and safety tips for cities across India
+        </p>
+      </div>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="container">
+      <div class="breadcrumbs">
+        <a href="#">Home</a>
+        <span>/</span>
+        <a href="#">Dashboard</a>
+      </div>
+    </div>
+
+    <!-- City Selection Form -->
+    <div class="container">
+      <div class="form-card">
+        <form
+          method="POST"
+          action="/city-trend"
+          onsubmit="return showSelectedCity()"
+        >
+          <div class="form-group">
+            <label for="city"
+              ><i class="fas fa-map-marker-alt"></i> Select a City</label
+            >
+            <select name="city" id="city" onchange="updatePreview()">
+              {% for city in unique_cities %}
+              <option value="{{ city }}">{{ city }}</option>
+              {% endfor %}
+            </select>
+            <div class="help-text">
+              Choose a city to view its crime statistics and trends
+            </div>
+          </div>
+          <button type="submit">
+            <i class="fas fa-search"></i> View Report
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Statistics Summary -->
+    <div class="container">
+      <h2 style="margin: 20px 0 15px; font-size: 1.3rem">
+        Crime Statistics Overview
+      </h2>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <i
+            class="fas fa-chart-line"
+            style="color: var(--primary); font-size: 1.2rem"
+          ></i>
+          <div class="stat-value">{{ total_crimes|default('24,738') }}</div>
+          <div class="stat-label">Total Reported Crimes</div>
+        </div>
+
+        <div class="stat-card">
+          <i
+            class="fas fa-calendar-day"
+            style="color: var(--primary); font-size: 1.2rem"
+          ></i>
+          <div class="stat-value">{{ daily_avg|default('68') }}</div>
+          <div class="stat-label">Daily Average</div>
+        </div>
+
+        <div class="stat-card">
+          <i
+            class="fas fa-chart-pie"
+            style="color: var(--primary); font-size: 1.2rem"
+          ></i>
+          <div class="stat-value">{{ yoy_change|default('-3.2%') }}</div>
+          <div class="stat-label">Year-over-Year Change</div>
+        </div>
+
+        <div class="stat-card">
+          <i
+            class="fas fa-exclamation-triangle"
+            style="color: var(--primary); font-size: 1.2rem"
+          ></i>
+          <div class="stat-value">{{ top_crime|default('Cyber Crimes') }}</div>
+          <div class="stat-label">Most Common</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crime Data Visualizations -->
+    {% if city_plot1 and city_plot2 %}
+    <div class="container">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-chart-line"></i>
+            Crime Trends in {{ selected_city }}
+          </div>
+          <div>
+            <button
+              id="downloadBtn"
+              style="
+                background: transparent;
+                color: var(--primary);
+                padding: 5px;
+              "
+            >
+              <i class="fas fa-download"></i> Download Report
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-container">
+            <img
+              src="data:image/png;base64,{{ city_plot1 }}"
+              alt="Overall Crime Trend"
+              class="chart-img"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-chart-bar"></i>
+            Crime by Category
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-container">
+            <img
+              src="data:image/png;base64,{{ city_plot2 }}"
+              alt="Crime by Type"
+              class="chart-img"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Safety Tips Section -->
+    <div class="container">
+      <h2 style="margin: 30px 0 15px; font-size: 1.3rem">
+        <i class="fas fa-shield-alt" style="color: var(--primary)"></i>
+        Safety Recommendations
+      </h2>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Safety Tips by Crime Type</div>
+        </div>
+        <div class="card-body">
+          <p style="margin-bottom: 15px">
+            Select a crime category to view specific safety recommendations:
+          </p>
+
+          <div class="tab-buttons" id="crimeTabs">
+            <button class="tab-btn" data-type="Murder">Murder</button>
+            <button class="tab-btn" data-type="Kidnapping">Kidnapping</button>
+            <button class="tab-btn" data-type="Crime against women">
+              Women
+            </button>
+            <button class="tab-btn" data-type="Crime against children">
+              Children
+            </button>
+            <button class="tab-btn" data-type="Crime against Senior Citizen">
+              Senior Citizens
+            </button>
+            <button class="tab-btn" data-type="Economic Offences">
+              Economic
+            </button>
+            <button class="tab-btn" data-type="Cyber Crimes">Cyber</button>
+          </div>
+
+          <div id="tipsContent">
+            <p>
+              Please select a crime type above to view safety recommendations.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Help Button -->
+    <div class="help-btn">
+      <i class="fas fa-question"></i>
+      <div class="help-tooltip">
+        Need help? Click here for assistance or call our helpline at
+        1800-111-2222
+      </div>
+    </div>
+
+    <script>
+      function updatePreview() {
+        const city = document.getElementById("city").value;
+        // Simple feedback to confirm selection
+        const formGroup = document.querySelector(".form-group");
+        const feedback = document.createElement("div");
+        feedback.textContent = city + " selected";
+        feedback.style.color = "var(--primary)";
+        feedback.style.fontSize = "0.9rem";
+        feedback.style.marginTop = "5px";
+
+        // Remove any existing feedback
+        const existingFeedback = formGroup.querySelector("div:not(.help-text)");
+        if (existingFeedback) {
+          formGroup.removeChild(existingFeedback);
+        }
+
+        formGroup.appendChild(feedback);
+
+        // Fade it out after 2 seconds
+        setTimeout(() => {
+          feedback.style.transition = "opacity 1s";
+          feedback.style.opacity = "0";
+        }, 2000);
+      }
+
+      function showSelectedCity() {
+        updatePreview();
+        return true;
+      }
+
+      // Crime Tips Tab System
+      document.addEventListener("DOMContentLoaded", function () {
+        const tabButtons = document.querySelectorAll(".tab-btn");
+
+        tabButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            // Remove active class from all buttons
+            tabButtons.forEach((btn) => btn.classList.remove("active"));
+
+            // Add active class to clicked button
+            this.classList.add("active");
+
+            // Show tips for selected crime type
+            showTips(this.dataset.type);
+          });
+        });
+      });
+
+      function showTips(crimeType) {
+        const tipsContent = document.getElementById("tipsContent");
+
+        if (!crimeType) {
+          tipsContent.innerHTML =
+            "<p>Please select a crime type to view safety recommendations.</p>";
+          return;
+        }
+
+        const tips = getCrimeTipsData(crimeType);
+
+        // Make sure tips exist
+        if (!tips) {
+          tipsContent.innerHTML = `<p>No tips found for "${crimeType}".</p>`;
+          return;
+        }
+
+        let html = `
+        <div class="tip-section">
+          <p style="margin-bottom: 15px;">${tips.description}</p>
+    
+          <div class="tip-title">Warning Signs</div>
+          <ul class="tip-list">
+            ${tips.warningSigns.map((sign) => `<li>${sign}</li>`).join("")}
+          </ul>
+        </div>
+    
+        <div class="tip-section">
+          <div class="tip-title">Safety Checklist</div>
+          <ul class="tip-list">
+            ${tips.checklist.map((item) => `<li>${item}</li>`).join("")}
+          </ul>
+        </div>
+    
+        <div class="tip-section">
+          <div class="tip-title">If You're a Victim</div>
+          <ul class="tip-list">
+            ${tips.victimAction.map((action) => `<li>${action}</li>`).join("")}
+          </ul>
+        </div>
+    
+        <div class="tip-section">
+          <div class="tip-title">Helpful Resources</div>
+          <ul class="tip-list">
+            ${tips.resources.map((resource) => `<li>${resource}</li>`).join("")}
+          </ul>
+        </div>
+      `;
+
+        tipsContent.innerHTML = html;
+      }
+
+      // Crime tips data
+      function getCrimeTipsData(crimeType) {
+        const crimeData = {
+          Murder: {
+            description:
+              "Intentional killing of a person, often planned or due to violent conflict.",
+            warningSigns: [
+              "Threatening behavior from known individuals",
+              "Escalating disputes",
+              "Stalking or obsessive interest",
+            ],
+            checklist: [
+              "Avoid conflict escalation",
+              "Travel with trusted people",
+              "Keep emergency contacts on speed dial",
+              "Use smart locks and cameras at home",
+            ],
+            victimAction: [
+              "Seek help from public/security areas immediately",
+              "Report threats to police",
+              "Inform family or close friends of your whereabouts",
+            ],
+            resources: [
+              "Emergency: 112",
+              "Local Police Station",
+              "Women/Men helplines (depending on context)",
+            ],
+          },
+
+          Kidnapping: {
+            description:
+              "Forcibly taking someone against their will, often for ransom or coercion.",
+            warningSigns: [
+              "Suspicious vehicles following you",
+              "Unfamiliar individuals frequently loitering",
+              "People asking unusual personal questions",
+            ],
+            checklist: [
+              "Teach kids 'stranger danger'",
+              "Use location sharing apps",
+              "Change travel routes regularly",
+              "Establish a family code word",
+            ],
+            victimAction: [
+              "Try to remember key details (location, car, captors)",
+              "Leave signs (clothing, belongings) if being moved",
+              "Attempt to alert bystanders when possible",
+            ],
+            resources: [
+              "Childline: 1098",
+              "Police: 112",
+              "Missing Persons Portal",
+            ],
+          },
+
+          "Crime against women": {
+            description:
+              "Includes harassment, assault, domestic abuse, dowry violence, etc.",
+            warningSigns: [
+              "Persistent unwanted attention",
+              "Controlling partners",
+              "Threats, manipulation, or gaslighting",
+            ],
+            checklist: [
+              "Take self-defense training",
+              "Carry pepper spray or loud alarm",
+              "Use verified cabs or public transport apps",
+              "Save and share live location",
+            ],
+            victimAction: [
+              "Call women's helpline or 112",
+              "Visit a police station or hospital",
+              "File an FIR; preserve evidence",
+            ],
+            resources: [
+              "Women Helpline: 1091",
+              "National Commission for Women: 7827170170",
+              "Raksha or Himmat App",
+            ],
+          },
+
+          "Crime against children": {
+            description:
+              "Abuse, abduction, trafficking, neglect, and exploitation of minors.",
+            warningSigns: [
+              "Sudden behavior change",
+              "Injuries with unclear explanations",
+              "Isolation or fear around adults",
+            ],
+            checklist: [
+              "Educate kids about safe/unsafe touch",
+              "Monitor online activity",
+              "Avoid leaving children unsupervised",
+              "Maintain open communication",
+            ],
+            victimAction: [
+              "Believe the child, stay calm",
+              "Report immediately to Childline",
+              "Seek legal and medical support",
+            ],
+            resources: [
+              "Childline: 1098",
+              "Child Welfare Committee",
+              "NCPCR Portal",
+            ],
+          },
+
+          "Crime against Senior Citizen": {
+            description:
+              "Crimes like theft, fraud, or abuse targeting the elderly.",
+            warningSigns: [
+              "Frequent financial discrepancies",
+              "Unexplained injuries",
+              "Fear or isolation",
+            ],
+            checklist: [
+              "Install video doorbells and alarms",
+              "Avoid sharing financial info over phone",
+              "Keep emergency contacts nearby",
+            ],
+            victimAction: [
+              "Inform neighbors or police",
+              "Lock safe room if in danger",
+              "Report fraud immediately",
+            ],
+            resources: [
+              "Elder Helpline: 14567",
+              "Police Emergency: 112",
+              "Local Senior Associations",
+            ],
+          },
+
+          "Economic Offences": {
+            description:
+              "Financial crimes such as fraud, forgery, money laundering, etc.",
+            warningSigns: [
+              "Unsolicited calls/emails promising big returns",
+              "Requests for OTPs or passwords",
+              "Fake websites or payment portals",
+            ],
+            checklist: [
+              "Enable 2FA on banking accounts",
+              "Check URLs before payments",
+              "Avoid unknown investment offers",
+            ],
+            victimAction: [
+              "Contact your bank to freeze accounts",
+              "Report at cybercrime.gov.in",
+              "File a complaint at the police station",
+            ],
+            resources: [
+              "Cyber Crime Helpline: 1930",
+              "Economic Offences Wing",
+              "RBI Complaint Portal",
+            ],
+          },
+
+          "Cyber Crimes": {
+            description:
+              "Online crimes including hacking, identity theft, phishing, online harassment, etc.",
+            warningSigns: [
+              "Suspicious emails requesting personal info",
+              "Unexpected account lockouts",
+              "Unauthorized transactions",
+              "Unknown software installations",
+            ],
+            checklist: [
+              "Use strong, unique passwords",
+              "Enable multi-factor authentication",
+              "Keep software updated",
+              "Be cautious with public WiFi",
+            ],
+            victimAction: [
+              "Change all passwords immediately",
+              "Report incident at cybercrime.gov.in",
+              "Contact affected service providers",
+              "Monitor credit reports",
+            ],
+            resources: [
+              "Cyber Crime Reporting Portal",
+              "National Cyber Crime Helpline: 1930",
+              "Indian Cyber Crime Coordination Centre (I4C)",
+            ],
+          },
+        };
+
+        return crimeData[crimeType];
+      }
+
+      // Add some UI feedback
+      document.addEventListener("DOMContentLoaded", function () {
+        // Tooltip for chart interaction
+        const charts = document.querySelectorAll(".chart-img");
+        charts.forEach((chart) => {
+          chart.title = "Click to enlarge";
+          chart.style.cursor = "pointer";
+
+          chart.addEventListener("click", function () {
+            // Simple "zoom" effect
+            if (this.style.maxWidth === "100%") {
+              this.style.maxWidth = "90%";
+              this.style.transition = "all 0.3s";
+              this.style.border = "none";
+            } else {
+              this.style.maxWidth = "100%";
+              this.style.transition = "all 0.3s";
+              this.style.border = "2px solid var(--primary)";
+            }
+          });
+        });
+
+        // Download button feedback
+        const downloadBtn = document.getElementById("downloadBtn");
+        if (downloadBtn) {
+          downloadBtn.addEventListener("click", function () {
+            this.innerHTML = '<i class="fas fa-check"></i> Downloaded';
+            this.style.color = "#28a745";
+
+            setTimeout(() => {
+              this.innerHTML =
+                '<i class="fas fa-download"></i> Download Report';
+              this.style.color = "var(--primary)";
+            }, 2000);
+          });
+        }
+      });
+    </script>
+    <script>
+      function redirectToIndex() {
+        window.location.href = "{{ url_for('index') }}";
+      }
+
+      function goToNews() {
+        window.location.href = "{{ url_for('news') }}";
+      }
+      function goToHeatmap() {
+        window.location.href = "{{ url_for('heatmap') }}";
+      }
+    </script>
+  </body>
+</html>
